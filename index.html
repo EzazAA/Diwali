@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+  <title>Diwali Greetings</title>
+  <style>
+    /* General Styling */
+    @font-face {
+        font-family: ponari;
+        src: url(Ponari.ttf);
+    }
+    body {
+      text-align: center;
+      font-family: Ponari ;
+      background-image: url(images\ \(2\).jpeg);
+      background-size:cover ;
+      background-position: center;
+      min-height: 100vh;
+      animation: bgAnimation 10s ease infinite;
+      color: white;
+      margin: 0;
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+    }
+    h1 { margin-top: 20px; font-size: 32px; text-shadow: black 2px 2px 2px;}
+    #nameInput { padding: 10px; font-size: 16px; }
+    #greeting, #message {
+      font-size: 24px;
+      margin-top: 20px;
+      opacity: 0;
+      transition: opacity 0.5s;
+      text-shadow: black  2px 2px 2px;
+    }
+    #greeting{
+        font-size: 30px;
+    }
+    .confetti { position: absolute; width: 100%; height: 100%; pointer-events: none; }
+    input{
+        border-radius: 3vh;
+        border: none;
+        background: rgb(255, 222, 130);
+        margin-bottom: 3vh;
+        padding: 7px;
+    }
+    button{
+        width: 10vh;
+        height: 4vh;
+        border-radius: 3vh;
+        border: none;
+        font-family: ponari;
+    }
+    /* Keyframe animations */
+    @keyframes bgAnimation {
+      0% { background-position: 0% 50%; }
+      50% { background-position: 100% 50%; }
+      100% { background-position: 0% 50%; }
+    }
+    @keyframes fadeIn {
+      0% { opacity: 0; transform: translateY(20px); }
+      100% { opacity: 1; transform: translateY(0); }
+    }
+
+    /* Mobile Specific Styling */
+    @media (max-width: 600px) {
+      h1 { font-size: 20px; }
+      #nameInput { padding: 8px; font-size: 14px; }
+      #greeting, #message { font-size: 20px; }
+    }
+  </style>
+</head>
+<body>
+  <h1>Aapka naam ji ?</h1>
+  <input type="text" id="nameInput" placeholder="Your Name">
+  <button onclick="showGreeting()">Chaliye</button>
+
+  <div id="greeting"></div>
+  <div id="message"></div>
+  <!-- Local confetti script -->
+  <script src="./confetti.browser.min.js"></script>
+  <script>
+    var duration = 15 * 1000;
+    var animationEnd = Date.now() + duration;
+    var defaults = { startVelocity: 30, spread: 360, ticks: 60, zIndex: 0 };
+
+    function randomInRange(min, max) {
+      return Math.random() * (max - min) + min;
+    }
+
+    function showGreeting() {
+      const name = document.getElementById("nameInput").value;
+      const greetingDiv = document.getElementById("greeting");
+      const messageDiv = document.getElementById("message");
+
+      greetingDiv.innerHTML = "";  // Reset greeting
+      messageDiv.innerHTML = "";   // Reset message
+
+      // Start confetti animation
+      startConfetti();
+
+      // Animate greeting words
+      const words = [`Diwali ki Bohot bohot Shubhkamnaye ${name} `];
+      words.forEach((word, index) => {
+        setTimeout(() => {
+          const span = document.createElement("span");
+          span.innerText = word + " ";
+          span.style.opacity = 0;
+          span.style.display = "inline-block";
+          span.style.animation = "fadeIn 0.5s forwards";
+          greetingDiv.appendChild(span);
+          greetingDiv.style.opacity = 1;
+        }, index * 600); // delay for each word
+      });
+
+      // Phrase-by-phrase effect for custom message
+      const phrases = [
+        "",
+        "Arz kiya hain...",
+        "Andheri raahon me roshni ki aas jagaye",
+        "Diwali ki ye raat har gham ko bhulaye",
+        "Chalo umeed ka diya jalaye",
+        "Khusiyon se zindagi sajaye",
+        "    - Ezaz ki taraf se appko ek tohfa...."
+      ];
+      
+      let phraseIndex = 0;
+      function showNextPhrase() {
+        if (phraseIndex < phrases.length) {
+          messageDiv.innerHTML = phrases[phraseIndex];
+          messageDiv.style.opacity = 1;  // Fade in
+
+          setTimeout(() => {
+            messageDiv.style.opacity = 0;  // Fade out after display
+            phraseIndex++;
+            setTimeout(showNextPhrase, 500);  // Delay before next phrase
+          }, 2000);  // Display duration for each phrase
+        } else {
+          // Stop confetti after all phrases
+          stopConfetti();
+        }
+      }
+
+      setTimeout(showNextPhrase, words.length * 600); // Start phrases after greeting
+    }
+
+    function startConfetti() {
+      var interval = setInterval(function() {
+        var timeLeft = 10000;
+
+        var particleCount = 50 * (timeLeft / duration);
+        confetti({ ...defaults, particleCount, origin: { x: randomInRange(0.1, 0.3), y: Math.random() - 0.2 } });
+        confetti({ ...defaults, particleCount, origin: { x: randomInRange(0.7, 0.9), y: Math.random() - 0.2 } });
+      }, 250);
+
+      // Store interval ID to stop it later
+      window.confettiInterval = interval;
+    }
+
+    function stopConfetti() {
+      clearInterval(window.confettiInterval);
+    }
+  </script>
+</body>
+</html>
